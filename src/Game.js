@@ -15,11 +15,7 @@ export default function Game(props) {
   return (
     <div className="game">
       <div className="game-board">
-        <Board
-          result={state.result}
-          getCurrentSquares={getCurrentSquares}
-          addHistory={addHistory}
-        />
+        <Board getCurrentSquares={getCurrentSquares} addHistory={addHistory} />
       </div>
       <div className="game-info">
         <button onClick={initState}>New Game</button>
@@ -64,6 +60,9 @@ export function useGameService(props) {
     state.result ? state.result.squares : getCurrentHistory().squares;
 
   const addHistory = squareIndex => {
+    if (state.result) {
+      return;
+    }
     const squares = getCurrentHistory().squares.slice();
     squares[squareIndex] = getPlayer();
     setState({

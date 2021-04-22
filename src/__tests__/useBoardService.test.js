@@ -8,7 +8,6 @@ describe("useBoardService", () => {
   beforeEach(() => {
     const { result } = renderHook(() => useGameService());
     getProps = () => ({
-      result: result.current.state.result,
       getCurrentSquares: result.current.getCurrentSquares,
       addHistory: result.current.addHistory
     });

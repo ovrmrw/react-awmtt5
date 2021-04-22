@@ -30,7 +30,7 @@ export function useBoardService(props) {
   const [squares, setSquares] = useState([]);
 
   const mark = index => {
-    if (!props.result && !squares[index]) {
+    if (!squares[index]) {
       props.addHistory(index);
     }
   };
