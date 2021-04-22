@@ -9,17 +9,27 @@ describe("useBoardService", () => {
     const { result } = renderHook(() => useGameService());
     getProps = () => ({
       result: result.current.state.result,
-      getCurrentHistory: result.current.getCurrentHistory,
+      getCurrentSquares: result.current.getCurrentSquares,
       addHistory: result.current.addHistory
     });
   });
 
-  test("ラインを揃えると勝利する", () => {
+  test("初期値", () => {
     const { result, rerender } = renderHook(props => useBoardService(props), {
       initialProps: getProps()
     });
 
-    expect(getProps().result).toBe(null);
+    const expected = [null, null, null, null, null, null, null, null, null];
+
+    expect(result.current.squares).toEqual(expected);
+  });
+
+  test("ラインを揃えたプレイヤーは勝利して、相手プレイヤーはそれ以上マスをマークできない", () => {
+    const { result, rerender } = renderHook(props => useBoardService(props), {
+      initialProps: getProps()
+    });
+
+    const expected = ["A", "B", null, "A", "B", null, "A", null, null];
 
     act(() => result.current.mark(0));
     rerender(getProps());
@@ -29,22 +39,13 @@ describe("useBoardService", () => {
     rerender(getProps());
     act(() => result.current.mark(4));
     rerender(getProps());
-    expect(getProps().result).toBe(null);
-
     act(() => result.current.mark(6));
     rerender(getProps());
-    expect(result.current.squares).toEqual([
-      "A",
-      "B",
-      null,
-      "A",
-      "B",
-      null,
-      "A",
-      null,
-      null
-    ]);
-    expect(getProps().result).toEqual({ winner: "A" });
+    expect(result.current.squares).toEqual(expected);
+
+    act(() => result.current.mark(7));
+    rerender(getProps());
+    expect(result.current.squares).toEqual(expected);
   });
 
   test("マーク済みのマスはマークできない", () => {
@@ -66,11 +67,11 @@ describe("useBoardService", () => {
       null
     ]);
 
-    act(() => result.current.mark(1));
+    act(() => result.current.mark(0));
     rerender(getProps());
     expect(result.current.squares).toEqual([
       "A",
-      "B",
+      null,
       null,
       null,
       null,
@@ -86,20 +87,6 @@ describe("useBoardService", () => {
       "A",
       "B",
       null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null
-    ]);
-
-    act(() => result.current.mark(2));
-    rerender(getProps());
-    expect(result.current.squares).toEqual([
-      "A",
-      "B",
-      "A",
       null,
       null,
       null,

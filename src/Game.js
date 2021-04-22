@@ -6,7 +6,7 @@ import MoveButton from "./MoveButton";
 export default function Game(props) {
   const {
     state,
-    getCurrentHistory,
+    getCurrentSquares,
     addHistory,
     initState,
     setGame
@@ -17,18 +17,19 @@ export default function Game(props) {
       <div className="game-board">
         <Board
           result={state.result}
-          getCurrentHistory={getCurrentHistory}
+          getCurrentSquares={getCurrentSquares}
           addHistory={addHistory}
         />
       </div>
       <div className="game-info">
         <button onClick={initState}>New Game</button>
         <div>{state.status}</div>
-        {state.history.slice(0, state.history.length - 1).map((_, index) => (
-          <ol key={index}>
-            <MoveButton index={index} move={() => setGame(index)} />
-          </ol>
-        ))}
+        {!state.result &&
+          state.history.slice(0, state.history.length - 1).map((_, index) => (
+            <ol key={index}>
+              <MoveButton index={index} move={() => setGame(index)} />
+            </ol>
+          ))}
       </div>
     </div>
   );
@@ -59,6 +60,9 @@ export function useGameService(props) {
 
   const getCurrentHistory = () => state.history[state.history.length - 1];
 
+  const getCurrentSquares = () =>
+    state.result ? state.result.squares : getCurrentHistory().squares;
+
   const addHistory = squareIndex => {
     const squares = getCurrentHistory().squares.slice();
     squares[squareIndex] = getPlayer();
@@ -69,9 +73,6 @@ export function useGameService(props) {
   };
 
   useEffect(() => {
-    if (state.result) {
-      return;
-    }
     setState({
       ...state,
       status: getPlayer() + "のターン"
@@ -79,9 +80,10 @@ export function useGameService(props) {
 
     const winner = calculateWinner(getCurrentHistory().squares);
     if (winner) {
+      const squares = getCurrentHistory().squares.slice();
       setState({
         ...state,
-        result: { winner }
+        result: { winner, squares }
       });
     }
   }, [state.history]);
@@ -90,13 +92,12 @@ export function useGameService(props) {
     if (state.result) {
       setState({
         ...state,
-        history: state.history.slice(state.history.length - 1),
         status: state.result.winner + "の勝ち"
       });
     }
   }, [state.result]);
 
-  return { state, getCurrentHistory, addHistory, initState, setGame };
+  return { state, getCurrentSquares, addHistory, initState, setGame };
 }
 
 function calculateWinner(squares) {

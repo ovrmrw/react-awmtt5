@@ -36,7 +36,7 @@ export function useBoardService(props) {
   };
 
   useEffect(() => {
-    setSquares(props.getCurrentHistory().squares);
+    setSquares(props.getCurrentSquares());
   });
 
   return { squares, mark };
