@@ -49,7 +49,7 @@ describe("useGameService", () => {
     });
 
     act(() => result.current.addHistory(7));
-    expect(result.current.getCurrentSquares()).toEqual(s3);
+    expect(result.current.getCurrentSquares()).toEqual(s6);
   });
 
   test("initState()", () => {
