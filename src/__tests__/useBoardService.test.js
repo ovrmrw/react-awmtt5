@@ -18,7 +18,7 @@ describe("useBoardService", () => {
       initialProps: getProps()
     });
 
-    const expected = [1, null, null, null, null, null, null, null, null];
+    const expected = [null, null, null, null, null, null, null, null, null];
 
     expect(result.current.squares).toEqual(expected);
   });
